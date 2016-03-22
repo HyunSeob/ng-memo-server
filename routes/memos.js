@@ -25,6 +25,17 @@ router.post('/', function(req, res) {
   }).catch((err) => res.status(500).send(err));
 });
 
+router.delete('/', function(req, res) {
+  let deleteIds = req.query.memos.split(',');
+  db.Memo.destroy({ where: { id: deleteIds } })
+  .then(function() {
+    res.sendStatus(200);
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).send(err);
+  });
+});
+
 router.put('/:id', function(req, res) {
   let memoGlobal;
   db.Memo.findOne({ where: { id: req.params.id } })
