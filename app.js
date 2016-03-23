@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
-db.sequelize.sync({ force: 1 });
+db.sequelize.sync();
 
 app.use('/memos', memos);
 app.use('/labels', labels);

@@ -83,7 +83,7 @@ router.put('/:id', function(req, res) {
   }).then(function(labels) {
     return memoGlobal.setLabels(labels.map((label) => label.name));
   }).then(function() {
-    res.sendStatus(200);
+    res.status(200).send(memoGlobal);
   }).catch(function(err) {
     console.log(err);
     res.status(500).send(err);
