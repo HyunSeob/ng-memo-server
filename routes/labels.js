@@ -10,4 +10,11 @@ router.get('/', function(req, res) {
   .catch((err) => res.status(500).send(err));
 });
 
+router.put('/:name', function(req, res) {
+  db.Label.findOne({ where: { name: req.params.name } })
+  .then((label) => { console.log('label', label); return label.update({ name: req.body.name }); })
+  .then((label) => { return res.status(200).send(label); })
+  .catch((err) => { console.log(err); res.status(500).send(err); });
+});
+
 module.exports = router;

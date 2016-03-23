@@ -25,6 +25,27 @@ router.post('/', function(req, res) {
   }).catch((err) => res.status(500).send(err));
 });
 
+router.put('/', function(req, res) {
+  let labelName;
+  db.Label.findOrCreate({ where: { name: req.body.label }})
+  .then(function(labels) {
+    labelName = labels[0].dataValues.name;
+    return db.Memo.findAll({ where: { id: req.body.memos }});
+  })
+  .then(function(memos) {
+    return Promise.each(memos, function(memo) {
+      return memo.addLabel(labelName);
+    });
+  })
+  .then(function(memos) {
+    res.status(200).send(memos);
+  })
+  .catch(function(err) {
+    console.log(err);
+    res.status(500).send(err);
+  });
+});
+
 router.delete('/', function(req, res) {
   let deleteIds = req.query.memos.split(',');
   db.Memo.destroy({ where: { id: deleteIds } })
@@ -32,6 +53,16 @@ router.delete('/', function(req, res) {
     res.sendStatus(200);
   }).catch(function(err) {
     console.log(err);
+    res.status(500).send(err);
+  });
+});
+
+router.get('/:id', function(req, res) {
+  db.Memo.findOne({ where: { id: req.params.id }})
+  .then(function(memo) {
+    res.status(200).send(memo);
+  })
+  .catch(function(err) {
     res.status(500).send(err);
   });
 });
@@ -64,10 +95,5 @@ router.delete('/:id', function(req, res) {
   .then(() => res.sendStatus(200))
   .catch((err) => res.status(500).send(err));
 });
-
-// router.get('/:memoId', function(req, res, next) {
-//   db.Memo.
-//   res.status(200).send({ message: 'good' });
-// });
 
 module.exports = router;
